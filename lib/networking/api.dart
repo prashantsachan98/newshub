@@ -4,8 +4,8 @@ import '../model/news.dart';
 import 'dart:async';
 
 class RestApiManager {
-  Future<News> fetchItunesAlbums() async {
-    var url = "https://inshortsv2.vercel.app/news?type=all_news&limit=100";
+  Future<News> fetchNews(data) async {
+    var url = "https://inshortsv2.vercel.app/news?type=$data" + "&limit=200";
     // Await the http get response, then decode the json-formatted responce.
     var response = await http.get(url);
     if (response.statusCode == 200) {
