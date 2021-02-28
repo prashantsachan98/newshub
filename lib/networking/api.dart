@@ -9,12 +9,10 @@ class RestApiManager {
     // Await the http get response, then decode the json-formatted responce.
     var response = await http.get(url);
     if (response.statusCode == 200) {
+      // ignore: unused_local_variable
       var jsonResponse = convert.jsonDecode(response.body);
-      print(jsonResponse);
 
       final news = newsFromJson(response.body);
-
-      print(news);
 
       return news;
     } else {

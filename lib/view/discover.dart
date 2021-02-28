@@ -9,7 +9,7 @@ class Discover extends StatefulWidget {
 
 class _DiscoverState extends State<Discover> {
   List data = [
-    'all',
+    'all_news',
     'trending',
     'top stories',
     'national',
@@ -52,21 +52,34 @@ class _DiscoverState extends State<Discover> {
                   setState(() {
                     newsType = data[index].toString();
                   });
-                  Navigator.of(context, rootNavigator: true).push(
-                    CupertinoPageRoute<bool>(
-                      //fullscreenDialog: true,
-                      builder: (BuildContext context) => MyHomePage(),
-                    ),
-                  );
+                  Navigator.of(context).push(new PageRouteBuilder(
+                      opaque: true,
+                      transitionDuration: const Duration(milliseconds: 200),
+                      pageBuilder: (BuildContext context, _, __) {
+                        return MyHomePage();
+                      },
+                      transitionsBuilder:
+                          (_, Animation<double> animation, __, Widget child) {
+                        return new SlideTransition(
+                          child: child,
+                          position: new Tween<Offset>(
+                            begin: const Offset(1, 0),
+                            end: Offset.zero,
+                          ).animate(animation),
+                        );
+                      }));
                 },
                 child: Column(
                   children: [
+                    SizedBox(
+                      height: 20,
+                    ),
                     Opacity(
                       opacity: 1,
                       child: Image.asset(
                         "assets/icons/${data[index]}.png",
-                        height: 70,
-                        width: 70,
+                        height: 95,
+                        width: 80,
                         fit: BoxFit.contain,
                       ),
                     ),

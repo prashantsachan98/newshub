@@ -18,11 +18,14 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return new MaterialApp(
+    return MaterialApp(
+      theme: ThemeData(
+          pageTransitionsTheme: PageTransitionsTheme(builders: {
+        TargetPlatform.android: CupertinoPageTransitionsBuilder(),
+        TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+      })),
       // title: 'Flutter Demo',
-      theme: new ThemeData(
-        primarySwatch: Colors.red,
-      ),
+
       home: new MyHomePage(),
     );
   }
@@ -30,7 +33,7 @@ class MyApp extends StatelessWidget {
 
 class MyHomePage extends StatefulWidget {
   @override
-  _MyHomePageState createState() => new _MyHomePageState();
+  _MyHomePageState createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
@@ -38,7 +41,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    var futureBuilder = new FutureBuilder<News>(
+    var futureBuilder = FutureBuilder<News>(
       future: RestApiManager().fetchNews(newsType),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         switch (snapshot.connectionState) {
@@ -49,19 +52,36 @@ class _MyHomePageState extends State<MyHomePage> {
             if (snapshot.hasError)
               return new Text('Error: ${snapshot.error}');
             else
-              //print(snapshot.data.feed.results[0].artistName);
-              print("yugandharrrr");
-
-            return createListView(context, snapshot);
+              return createListView(context, snapshot);
         }
       },
     );
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          "News Hub",
-          style: GoogleFonts.staatliches(),
+        automaticallyImplyLeading: false,
+        toolbarHeight: 50,
+        shadowColor: Colors.white,
+        backgroundColor: Colors.white,
+        title: Container(
+          width: MediaQuery.of(context).size.width * 1,
+          child: Card(
+            shadowColor: Color.fromRGBO(229, 19, 36, 1),
+            elevation: 0,
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
+              child: Text(
+                'News Hub',
+                style: GoogleFonts.lobster(
+                    letterSpacing: 1,
+                    fontSize: 30,
+                    color: Color.fromRGBO(229, 19, 36, 1)),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ),
         ),
       ),
       body: futureBuilder,
@@ -73,29 +93,49 @@ class _MyHomePageState extends State<MyHomePage> {
       scrollDirection: Axis.vertical,
       transformer: DeepthPageTransformer(),
       curve: Curves.easeInBack,
-      itemCount: 100,
+      itemCount: snapshot.data.total,
       itemBuilder: (BuildContext context, int index) {
         url = snapshot.data.articles[index].sourceUrl;
         return GestureDetector(
           onHorizontalDragEnd: (details) {
             // Note: Sensitivity is integer used when you don't want to mess up vertical drag
             if (details.primaryVelocity > 10) {
-              Navigator.of(context, rootNavigator: true).push(
-                CupertinoPageRoute<bool>(
-                  //fullscreenDialog: true,
-                  builder: (BuildContext context) => Discover(),
-                ),
-              );
+              Navigator.of(context).push(new PageRouteBuilder(
+                  opaque: true,
+                  transitionDuration: const Duration(milliseconds: 200),
+                  pageBuilder: (BuildContext context, _, __) {
+                    return Discover();
+                  },
+                  transitionsBuilder:
+                      (_, Animation<double> animation, __, Widget child) {
+                    return new SlideTransition(
+                      child: child,
+                      position: new Tween<Offset>(
+                        begin: const Offset(-1, 0),
+                        end: Offset.zero,
+                      ).animate(animation),
+                    );
+                  }));
               // User swiped Left
               print('left');
             } else if (details.primaryVelocity < 10) {
               // User swiped Right
-              Navigator.of(context, rootNavigator: true).push(
-                CupertinoPageRoute<bool>(
-                  //fullscreenDialog: true,
-                  builder: (BuildContext context) => Source(url),
-                ),
-              );
+              Navigator.of(context).push(new PageRouteBuilder(
+                  opaque: true,
+                  transitionDuration: const Duration(milliseconds: 200),
+                  pageBuilder: (BuildContext context, _, __) {
+                    return Source(url);
+                  },
+                  transitionsBuilder:
+                      (_, Animation<double> animation, __, Widget child) {
+                    return new SlideTransition(
+                      child: child,
+                      position: new Tween<Offset>(
+                        begin: const Offset(1, 0),
+                        end: Offset.zero,
+                      ).animate(animation),
+                    );
+                  }));
             }
           },
           child: Card(
@@ -107,7 +147,7 @@ class _MyHomePageState extends State<MyHomePage> {
               padding: EdgeInsets.all(5),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: <Widget>[
                   ClipRRect(
                     borderRadius: BorderRadius.circular(8.0),
@@ -123,9 +163,9 @@ class _MyHomePageState extends State<MyHomePage> {
                     height: 10,
                   ),
                   Text(snapshot.data.articles[index].title,
-                      style: GoogleFonts.roboto(fontSize: 22)),
+                      style: GoogleFonts.roboto(fontSize: 23)),
                   SizedBox(
-                    height: 5,
+                    height: 10,
                   ),
                   Row(
                     children: [
@@ -140,11 +180,11 @@ class _MyHomePageState extends State<MyHomePage> {
                   Text(
                     snapshot.data.articles[index].description,
                     style: GoogleFonts.roboto(
-                      fontSize: 17,
-                    ),
+                        fontSize: 18, wordSpacing: 3, height: 1.1),
                   ),
-                  SizedBox(height: 15),
+                  SizedBox(height: 7),
                   InkWell(
+                    splashColor: Colors.black,
                     onTap: () {
                       Navigator.of(context, rootNavigator: true).push(
                         CupertinoPageRoute<bool>(
@@ -161,10 +201,10 @@ class _MyHomePageState extends State<MyHomePage> {
                         padding: EdgeInsets.symmetric(horizontal: 10),
                         child: Text(
                             'Read more at ${snapshot.data.articles[index].sourceName}',
-                            style: GoogleFonts.harmattan(fontSize: 20)),
+                            style: GoogleFonts.harmattan(fontSize: 21)),
                       ),
                     ),
-                  )
+                  ),
                 ],
               ),
             ),
