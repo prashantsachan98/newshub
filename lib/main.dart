@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:newshub/view/discover.dart';
 import 'package:newshub/view/source.dart';
 import 'package:transformer_page_view/transformer_page_view.dart';
 import 'package:flutter/cupertino.dart';
-
+import 'package:get/get.dart';
 import './networking/api.dart';
 import './model/news.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import './transformers/transformer.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-String newsType = 'all_news';
+import 'controller/controller.dart';
+
+//String newsType = 'all_news';
 void main() {
   runApp(MyApp());
 }
@@ -41,8 +44,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.put(Controller());
     var futureBuilder = FutureBuilder<News>(
-      future: RestApiManager().fetchNews(newsType),
+      future: RestApiManager().fetchNews(controller.newsType),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         switch (snapshot.connectionState) {
           case ConnectionState.none:
@@ -102,7 +106,7 @@ class _MyHomePageState extends State<MyHomePage> {
             if (details.primaryVelocity > 10) {
               Navigator.of(context).push(new PageRouteBuilder(
                   opaque: true,
-                  transitionDuration: const Duration(milliseconds: 200),
+                  transitionDuration: const Duration(milliseconds: 150),
                   pageBuilder: (BuildContext context, _, __) {
                     return Discover();
                   },
@@ -122,7 +126,7 @@ class _MyHomePageState extends State<MyHomePage> {
               // User swiped Right
               Navigator.of(context).push(new PageRouteBuilder(
                   opaque: true,
-                  transitionDuration: const Duration(milliseconds: 200),
+                  transitionDuration: const Duration(milliseconds: 150),
                   pageBuilder: (BuildContext context, _, __) {
                     return Source(url);
                   },
@@ -147,12 +151,12 @@ class _MyHomePageState extends State<MyHomePage> {
               padding: EdgeInsets.all(5),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
                   ClipRRect(
                     borderRadius: BorderRadius.circular(8.0),
                     child: Image(
-                      height: MediaQuery.of(context).size.height * 0.35,
+                      height: MediaQuery.of(context).size.height * 0.30,
                       width: MediaQuery.of(context).size.width * 1,
                       fit: BoxFit.cover,
                       image: CachedNetworkImageProvider(

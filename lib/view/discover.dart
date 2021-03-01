@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:newshub/controller/controller.dart';
 import 'package:newshub/main.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -28,6 +30,7 @@ class _DiscoverState extends State<Discover> {
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.put(Controller());
     return Scaffold(
       body: GestureDetector(
         onHorizontalDragEnd: (details) {
@@ -49,9 +52,8 @@ class _DiscoverState extends State<Discover> {
               return InkWell(
                 splashColor: Colors.black45,
                 onTap: () {
-                  setState(() {
-                    newsType = data[index].toString();
-                  });
+                  controller.newsType = data[index].toString();
+                  print(data[index].toString());
                   Navigator.of(context).push(new PageRouteBuilder(
                       opaque: true,
                       transitionDuration: const Duration(milliseconds: 200),
