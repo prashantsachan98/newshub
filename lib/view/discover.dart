@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:newshub/controller/controller.dart';
 import 'package:newshub/main.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:newshub/view/searched.dart';
 
 class Discover extends StatefulWidget {
   @override
@@ -30,6 +31,7 @@ class _DiscoverState extends State<Discover> {
 
   @override
   Widget build(BuildContext context) {
+    var _controller = TextEditingController();
     final controller = Get.put(Controller());
     return Scaffold(
       body: GestureDetector(
@@ -43,54 +45,120 @@ class _DiscoverState extends State<Discover> {
             Navigator.pop(context);
           }
         },
-        child: Container(
-          child: GridView.builder(
-            itemCount: data.length,
-            gridDelegate:
-                SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
-            itemBuilder: (BuildContext context, int index) {
-              return InkWell(
-                splashColor: Colors.black45,
-                onTap: () {
-                  controller.newsType = data[index].toString();
-                  print(data[index].toString());
-                  Navigator.of(context).push(new PageRouteBuilder(
-                      opaque: true,
-                      transitionDuration: const Duration(milliseconds: 200),
-                      pageBuilder: (BuildContext context, _, __) {
-                        return MyHomePage();
-                      },
-                      transitionsBuilder:
-                          (_, Animation<double> animation, __, Widget child) {
-                        return new SlideTransition(
-                          child: child,
-                          position: new Tween<Offset>(
-                            begin: const Offset(1, 0),
-                            end: Offset.zero,
-                          ).animate(animation),
-                        );
-                      }));
-                },
-                child: Column(
-                  children: [
-                    SizedBox(
-                      height: 20,
+        child: Column(
+          children: [
+            SizedBox(
+              height: 5,
+            ),
+            Card(
+                margin: EdgeInsets.all(5),
+                shape: RoundedRectangleBorder(
+                    side: BorderSide(
+                      width: 2,
+                      color: Colors.blue,
                     ),
-                    Opacity(
-                      opacity: 1,
-                      child: Image.asset(
-                        "assets/icons/${data[index]}.png",
-                        height: 95,
-                        width: 80,
-                        fit: BoxFit.contain,
+                    borderRadius: BorderRadius.circular(20)),
+                // decoration: BoxDecoration(shape: BoxShape.circle),
+                child: Row(
+                  children: [
+                    Container(
+                      width: MediaQuery.of(context).size.width * 0.8,
+                      child: TextField(
+                        controller: _controller,
+                        onSubmitted: (searchedNews) {
+                          Navigator.of(context).push(
+                            new PageRouteBuilder(
+                              opaque: true,
+                              transitionDuration:
+                                  const Duration(milliseconds: 200),
+                              pageBuilder: (BuildContext context, _, __) {
+                                return Search(searchedNews);
+                              },
+                              transitionsBuilder: (_,
+                                  Animation<double> animation,
+                                  __,
+                                  Widget child) {
+                                return new SlideTransition(
+                                  child: child,
+                                  position: new Tween<Offset>(
+                                    begin: const Offset(1, 0),
+                                    end: Offset.zero,
+                                  ).animate(animation),
+                                );
+                              },
+                            ),
+                          );
+                        },
+                        decoration: InputDecoration(
+                          contentPadding: EdgeInsets.all(16),
+                          hintText: 'Search...',
+                          border: InputBorder.none,
+                          hintStyle: TextStyle(color: Colors.blue),
+                        ),
                       ),
                     ),
-                    Text(data[index])
+                    Container(
+                      alignment: Alignment.center,
+                      width: MediaQuery.of(context).size.width * 0.16,
+                      child: IconButton(
+                        onPressed: () => _controller.clear(),
+                        icon: Icon(Icons.clear),
+                      ),
+                    )
                   ],
-                ),
-              );
-            },
-          ),
+                )),
+            Container(
+              height: MediaQuery.of(context).size.height * 0.886,
+              child: GridView.builder(
+                padding: EdgeInsets.all(0),
+                itemCount: data.length,
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 3),
+                itemBuilder: (BuildContext context, int index) {
+                  return InkWell(
+                    splashColor: Colors.black45,
+                    onTap: () {
+                      controller.newsType = data[index].toString();
+                      print(data[index].toString());
+                      Navigator.of(context).push(new PageRouteBuilder(
+                          opaque: true,
+                          transitionDuration: const Duration(milliseconds: 200),
+                          pageBuilder: (BuildContext context, _, __) {
+                            return MyHomePage();
+                          },
+                          transitionsBuilder: (_, Animation<double> animation,
+                              __, Widget child) {
+                            return new SlideTransition(
+                              child: child,
+                              position: new Tween<Offset>(
+                                begin: const Offset(1, 0),
+                                end: Offset.zero,
+                              ).animate(animation),
+                            );
+                          }));
+                    },
+                    child: Column(
+                      children: [
+                        Opacity(
+                          opacity: controller.newsType == data[index] ? 1 : 0.4,
+                          child: Image.asset(
+                            "assets/icons/${data[index]}.png",
+                            height: 80,
+                            width: 75,
+                            fit: BoxFit.contain,
+                          ),
+                        ),
+                        Text(
+                          data[index],
+                          style: TextStyle(fontWeight: FontWeight.w400),
+                        )
+                      ],
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
         ),
       ),
     );

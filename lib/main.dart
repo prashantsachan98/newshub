@@ -82,7 +82,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     letterSpacing: 1,
                     fontSize: 30,
                     color: Color.fromRGBO(229, 19, 36, 1)),
-                textAlign: TextAlign.center,
+                textAlign: TextAlign.start,
               ),
             ),
           ),
