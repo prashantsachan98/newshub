@@ -5,6 +5,7 @@ import 'package:newshub/view/source.dart';
 import '../networking/api.dart';
 import '../model/news.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:get/get.dart';
 
 class Search extends StatelessWidget {
   final String searchedNews;
@@ -15,22 +16,7 @@ class Search extends StatelessWidget {
       floatingActionButton: IconButton(
         icon: Icon(Icons.clear),
         onPressed: () {
-          Navigator.of(context).push(new PageRouteBuilder(
-              opaque: true,
-              transitionDuration: const Duration(milliseconds: 150),
-              pageBuilder: (BuildContext context, _, __) {
-                return Discover();
-              },
-              transitionsBuilder:
-                  (_, Animation<double> animation, __, Widget child) {
-                return new SlideTransition(
-                  child: child,
-                  position: new Tween<Offset>(
-                    begin: const Offset(1, 0),
-                    end: Offset.zero,
-                  ).animate(animation),
-                );
-              }));
+          Get.off(Discover());
         },
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
@@ -70,9 +56,8 @@ class Search extends StatelessWidget {
                             );
                           },
                         );
-                      } else {
-                        return null;
                       }
+                      return SizedBox(height: 0);
                     });
           }
         },

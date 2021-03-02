@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:newshub/controller/controller.dart';
-import 'package:newshub/main.dart';
+import './homepage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:newshub/view/searched.dart';
 
@@ -66,28 +66,7 @@ class _DiscoverState extends State<Discover> {
                       child: TextField(
                         controller: _controller,
                         onSubmitted: (searchedNews) {
-                          Navigator.of(context).push(
-                            new PageRouteBuilder(
-                              opaque: true,
-                              transitionDuration:
-                                  const Duration(milliseconds: 200),
-                              pageBuilder: (BuildContext context, _, __) {
-                                return Search(searchedNews);
-                              },
-                              transitionsBuilder: (_,
-                                  Animation<double> animation,
-                                  __,
-                                  Widget child) {
-                                return new SlideTransition(
-                                  child: child,
-                                  position: new Tween<Offset>(
-                                    begin: const Offset(1, 0),
-                                    end: Offset.zero,
-                                  ).animate(animation),
-                                );
-                              },
-                            ),
-                          );
+                          Get.off(Search(searchedNews));
                         },
                         decoration: InputDecoration(
                           contentPadding: EdgeInsets.all(16),
