@@ -18,6 +18,7 @@ class Source extends StatelessWidget {
       ),
       body: WebView(
         initialUrl: url,
+        gestureNavigationEnabled: true,
         javascriptMode: JavascriptMode.unrestricted,
       ),
       floatingActionButton: RaisedButton(

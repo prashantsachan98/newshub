@@ -94,44 +94,61 @@ class _DiscoverState extends State<Discover> {
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 3),
                 itemBuilder: (BuildContext context, int index) {
-                  return InkWell(
-                    splashColor: Colors.black45,
-                    onTap: () {
-                      controller.newsType = data[index].toString();
-                      print(data[index].toString());
-                      Navigator.of(context).push(new PageRouteBuilder(
-                          opaque: true,
-                          transitionDuration: const Duration(milliseconds: 200),
-                          pageBuilder: (BuildContext context, _, __) {
-                            return MyHomePage();
-                          },
-                          transitionsBuilder: (_, Animation<double> animation,
-                              __, Widget child) {
-                            return new SlideTransition(
-                              child: child,
-                              position: new Tween<Offset>(
-                                begin: const Offset(1, 0),
-                                end: Offset.zero,
-                              ).animate(animation),
-                            );
-                          }));
-                    },
-                    child: Column(
-                      children: [
-                        Opacity(
-                          opacity: controller.newsType == data[index] ? 1 : 0.4,
-                          child: Image.asset(
-                            "assets/icons/${data[index]}.png",
-                            height: 80,
-                            width: 75,
-                            fit: BoxFit.contain,
-                          ),
+                  return Transform.scale(
+                    scale: controller.newsType == data[index] ? 1.2 : 1,
+                    child: Container(
+                      child: InkWell(
+                        splashColor: Colors.blue,
+                        onTap: () {
+                          controller.newsType = data[index].toString();
+                          print(data[index].toString());
+                          Navigator.of(context).push(new PageRouteBuilder(
+                              opaque: true,
+                              transitionDuration:
+                                  const Duration(milliseconds: 200),
+                              pageBuilder: (BuildContext context, _, __) {
+                                return MyHomePage();
+                              },
+                              transitionsBuilder: (_,
+                                  Animation<double> animation,
+                                  __,
+                                  Widget child) {
+                                return new SlideTransition(
+                                  child: child,
+                                  position: new Tween<Offset>(
+                                    begin: const Offset(1, 0),
+                                    end: Offset.zero,
+                                  ).animate(animation),
+                                );
+                              }));
+                        },
+                        child: Column(
+                          children: [
+                            Opacity(
+                              opacity:
+                                  controller.newsType == data[index] ? 1 : 0.4,
+                              child: Image.asset(
+                                "assets/icons/${data[index]}.png",
+                                height: 80,
+                                width: 75,
+                                fit: BoxFit.contain,
+                              ),
+                            ),
+                            Text(
+                              data[index],
+                              style: controller.newsType == data[index]
+                                  ? TextStyle(
+                                      // color: Color(0xff8192A3),
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w400)
+                                  : TextStyle(
+                                      // color: Color(0xff777777),
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w400),
+                            )
+                          ],
                         ),
-                        Text(
-                          data[index],
-                          style: TextStyle(fontWeight: FontWeight.w400),
-                        )
-                      ],
+                      ),
                     ),
                   );
                 },

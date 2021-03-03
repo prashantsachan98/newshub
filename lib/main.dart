@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import 'package:newshub/view/homepage.dart';
 
 void main() => runApp(MyApp());
@@ -9,7 +10,7 @@ void main() => runApp(MyApp());
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       title: "InternetUi",
       debugShowCheckedModeBanner: false,
       theme: ThemeData(

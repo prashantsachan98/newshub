@@ -39,13 +39,14 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  final controller = Get.put(Controller());
   String url;
   PageController lol;
 
   @override
   Widget build(BuildContext context) {
     SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
-    final controller = Get.put(Controller());
+
     var futureBuilder = FutureBuilder<News>(
       future: RestApiManager().fetchNews(controller.newsType),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -152,47 +153,73 @@ class _MyHomePageState extends State<MyHomePage> {
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
             child: Container(
-              //padding: EdgeInsets.all(2),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       ClipRRect(
-                        borderRadius: BorderRadius.circular(8.0),
-                        child: Image(
-                          height: MediaQuery.of(context).size.height * 0.42,
-                          width: MediaQuery.of(context).size.width * 1,
-                          fit: BoxFit.cover,
-                          image: CachedNetworkImageProvider(
-                              snapshot.data.articles[index].imageUrl),
+                        borderRadius: BorderRadius.circular(10),
+                        child: Container(
+                          color: Colors.blueGrey,
+                          child: Image(
+                            height: MediaQuery.of(context).size.height * 0.45,
+                            width: MediaQuery.of(context).size.width * 1,
+                            fit: BoxFit.cover,
+                            image: CachedNetworkImageProvider(
+                                snapshot.data.articles[index].imageUrl),
+                          ),
                         ),
                       ),
                       SizedBox(
                         height: 10,
                       ),
-                      Text(snapshot.data.articles[index].title,
-                          style: GoogleFonts.roboto(fontSize: 23)),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: Text(
+                          snapshot.data.articles[index].title,
+                          style: GoogleFonts.roboto(
+                              fontSize: 18, fontWeight: FontWeight.w500),
+                          softWrap: true,
+                        ),
+                      ),
                       SizedBox(
                         height: 5,
                       ),
-                      Row(
-                        children: [
-                          Text(
-                            'Author  ',
-                            style:
-                                GoogleFonts.roboto(fontWeight: FontWeight.bold),
-                          ),
-                          Text(snapshot.data.articles[index].authorName)
-                        ],
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: Row(
+                          children: [
+                            Text(
+                              'Author :   ',
+                              style: TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w600),
+                            ),
+                            Text(
+                              snapshot.data.articles[index].authorName,
+                              style: TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w400),
+                            )
+                          ],
+                        ),
                       ),
                       SizedBox(height: 10),
-                      Text(
-                        snapshot.data.articles[index].description,
-                        style: GoogleFonts.roboto(
-                            fontSize: 18, wordSpacing: 3, height: 1.1),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: Text(
+                          snapshot.data.articles[index].description,
+                          style: GoogleFonts.roboto(
+                            fontSize: 15,
+                            height: 1.5,
+                            fontWeight: FontWeight.w300,
+                          ),
+                        ),
                       ),
                     ],
                   ),
@@ -207,15 +234,25 @@ class _MyHomePageState extends State<MyHomePage> {
                         ),
                       );
                     },
-                    child: Card(
-                      color: Colors.amber,
-                      shadowColor: Colors.amberAccent,
-                      margin: EdgeInsets.symmetric(vertical: 10),
-                      child: Container(
-                        padding: EdgeInsets.symmetric(horizontal: 10),
-                        child: Text(
-                            'Read more at ${snapshot.data.articles[index].sourceName}',
-                            style: GoogleFonts.harmattan(fontSize: 21)),
+                    child: Container(
+                      height: 50,
+                      width: MediaQuery.of(context).size.width * 1,
+                      child: Card(
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10)),
+                        color: Color(0xffBEC8D2),
+                        shadowColor: Colors.amberAccent,
+                        // margin: EdgeInsets.symmetric(vertical: 10),
+                        child: Container(
+                          alignment: Alignment.center,
+                          padding: EdgeInsets.symmetric(horizontal: 10),
+                          child: Text(
+                              'Read more at ${snapshot.data.articles[index].sourceName}',
+                              style: TextStyle(
+                                  // color: Colors.grey,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w400)),
+                        ),
                       ),
                     ),
                   ),

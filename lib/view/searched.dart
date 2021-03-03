@@ -26,7 +26,7 @@ class Search extends StatelessWidget {
           switch (snapshot.connectionState) {
             case ConnectionState.none:
             case ConnectionState.waiting:
-              return new Text('loading...');
+              return Center(child: CircularProgressIndicator());
             default:
               if (snapshot.hasError)
                 return new Text('Error: ${snapshot.error}');
