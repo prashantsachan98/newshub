@@ -124,11 +124,22 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            CircularProgressIndicator(),
-            Padding(
-              padding: EdgeInsets.only(top: 20.0),
-              child: Text("Checking Your Internet Connection."),
+            Transform.scale(
+              scale: 0.5,
+              child: Container(
+                child: Center(child: Image.asset('assets/images/newshub.png')),
+              ),
             ),
+            Transform.scale(
+              scale: 0.5,
+              child: CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.teal),
+              ),
+            ),
+            //Padding(
+            //padding: EdgeInsets.only(top: 20.0),
+            //child: Text("Checking Your Internet Connection."),
+            //),
           ],
         ),
       ),
