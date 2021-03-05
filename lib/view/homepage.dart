@@ -350,7 +350,6 @@ class _MyHomePageState extends State<MyHomePage> {
             onWebViewCreated: (controller) {
               _webViewController = controller;
             },
-            debuggingEnabled: true,
             initialUrl: controller.urlType,
             javascriptMode: JavascriptMode.unrestricted,
           ),
