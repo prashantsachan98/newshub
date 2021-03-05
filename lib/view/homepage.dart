@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:webview_flutter/webview_flutter.dart';
-import './searched.dart';
+
 import 'package:get/get_core/src/get_main.dart';
-import 'package:newshub/view/source.dart';
 import 'package:transformer_page_view/transformer_page_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
@@ -32,13 +31,17 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class MyHomePage extends StatelessWidget {
+class MyHomePage extends StatefulWidget {
+  @override
+  _MyHomePageState createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
   final controller = Get.put(Controller());
+  PageController pageView = PageController();
   String url;
-  var _controller = TextEditingController();
   var _webViewController;
 
-  PageController lol;
   final List data = [
     'all_news',
     'trending',
@@ -214,6 +217,10 @@ class MyHomePage extends StatelessWidget {
           ),
         ),
         TransformerPageView(
+          onPageChanged: (_) {
+            PaintingBinding.instance.imageCache.clear();
+            PaintingBinding.instance.imageCache.clearLiveImages();
+          },
           //pageController: TransformerPageController(viewportFraction: 0.),
           scrollDirection: Axis.vertical,
           transformer: DeepthPageTransformer(),
@@ -245,7 +252,9 @@ class MyHomePage extends StatelessWidget {
                               width: MediaQuery.of(context).size.width * 1,
                               fit: BoxFit.cover,
                               image: CachedNetworkImageProvider(
-                                  snapshot.data.articles[index].imageUrl),
+                                snapshot.data.articles[index].imageUrl,
+                                // scale: 0,
+                              ),
                             ),
                           ),
                         ),
@@ -257,7 +266,7 @@ class MyHomePage extends StatelessWidget {
                           child: Text(
                             snapshot.data.articles[index].title,
                             style: GoogleFonts.roboto(
-                                fontSize: 18, fontWeight: FontWeight.w500),
+                                fontSize: 19, fontWeight: FontWeight.w500),
                             softWrap: true,
                           ),
                         ),
@@ -272,14 +281,14 @@ class MyHomePage extends StatelessWidget {
                                 'Author :   ',
                                 style: TextStyle(
                                     color: Colors.grey,
-                                    fontSize: 12,
+                                    fontSize: 13,
                                     fontWeight: FontWeight.w600),
                               ),
                               Text(
                                 snapshot.data.articles[index].authorName,
                                 style: TextStyle(
                                     color: Colors.grey,
-                                    fontSize: 12,
+                                    fontSize: 13,
                                     fontWeight: FontWeight.w400),
                               )
                             ],
@@ -291,7 +300,7 @@ class MyHomePage extends StatelessWidget {
                           child: Text(
                             snapshot.data.articles[index].description,
                             style: GoogleFonts.roboto(
-                              fontSize: 15,
+                              fontSize: 16,
                               height: 1.5,
                               fontWeight: FontWeight.w300,
                             ),
@@ -302,14 +311,7 @@ class MyHomePage extends StatelessWidget {
                     SizedBox(height: 7),
                     InkWell(
                       splashColor: Colors.black,
-                      onTap: () {
-                        Navigator.of(context, rootNavigator: true).push(
-                          CupertinoPageRoute<bool>(
-                            //fullscreenDialog: true,
-                            builder: (BuildContext context) => Source(url),
-                          ),
-                        );
-                      },
+                      onTap: null,
                       child: Container(
                         height: 50,
                         width: MediaQuery.of(context).size.width * 1,
@@ -323,7 +325,7 @@ class MyHomePage extends StatelessWidget {
                             alignment: Alignment.center,
                             padding: EdgeInsets.symmetric(horizontal: 10),
                             child: Text(
-                                'Read more at ${snapshot.data.articles[index].sourceName}',
+                                ' << Swipe left to read more at ${snapshot.data.articles[index].sourceName}',
                                 style: TextStyle(
                                     // color: Colors.grey,
                                     fontSize: 14,
