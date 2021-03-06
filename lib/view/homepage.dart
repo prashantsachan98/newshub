@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:screenshot/screenshot.dart';
 import 'package:webview_flutter/webview_flutter.dart';
-
+import 'package:share/share.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:transformer_page_view/transformer_page_view.dart';
 import 'package:flutter/cupertino.dart';
@@ -41,6 +42,7 @@ class _MyHomePageState extends State<MyHomePage> {
   PageController pageView = PageController();
   String url;
   var _webViewController;
+  final _screenshotController = ScreenshotController();
 
   final List data = [
     'all_news',
@@ -216,129 +218,149 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
           ),
         ),
-        TransformerPageView(
-          onPageChanged: (_) {
-            PaintingBinding.instance.imageCache.clear();
-            PaintingBinding.instance.imageCache.clearLiveImages();
+        InkWell(
+          onTap: () {
+            _startAddNewTransaction(context);
           },
-          //pageController: TransformerPageController(viewportFraction: 0.),
-          scrollDirection: Axis.vertical,
-          transformer: DeepthPageTransformer(),
-          curve: Curves.easeInBack,
-          itemCount: snapshot.data.total,
-          itemBuilder: (BuildContext context, int index) {
-            controller.urlType = snapshot.data.articles[index].sourceUrl;
-            return Card(
-              margin: EdgeInsets.symmetric(horizontal: 2, vertical: 1),
+          child: TransformerPageView(
+            onPageChanged: (_) {
+              PaintingBinding.instance.imageCache.clear();
+              PaintingBinding.instance.imageCache.clearLiveImages();
+            },
+            //pageController: TransformerPageController(viewportFraction: 0.),
+            scrollDirection: Axis.vertical,
+            transformer: DeepthPageTransformer(),
+            curve: Curves.easeInBack,
+            itemCount: snapshot.data.total,
+            itemBuilder: (BuildContext context, int index) {
+              controller.urlType = snapshot.data.articles[index].sourceUrl;
+              return Screenshot(
+                controller: _screenshotController,
+                child: Card(
+                  margin: EdgeInsets.symmetric(horizontal: 2, vertical: 1),
 
-              elevation: 10,
-              //color: Colors.grey,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10)),
-              child: Container(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(10),
-                          child: Container(
-                            color: Colors.blueGrey,
-                            child: Image(
-                              height: MediaQuery.of(context).size.height * 0.45,
-                              width: MediaQuery.of(context).size.width * 1,
-                              fit: BoxFit.cover,
-                              image: CachedNetworkImageProvider(
-                                snapshot.data.articles[index].imageUrl,
-                                // scale: 0,
+                  elevation: 10,
+                  //color: Colors.grey,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10)),
+                  child: Container(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              child: Container(
+                                color: Colors.blueGrey,
+                                child: Image(
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.45,
+                                  width: MediaQuery.of(context).size.width * 1,
+                                  fit: BoxFit.cover,
+                                  image: CachedNetworkImageProvider(
+                                    snapshot.data.articles[index].imageUrl,
+                                    // scale: 0,
+                                  ),
+                                ),
                               ),
                             ),
-                          ),
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                          child: Text(
-                            snapshot.data.articles[index].title,
-                            style: GoogleFonts.roboto(
-                                fontSize: 19, fontWeight: FontWeight.w500),
-                            softWrap: true,
-                          ),
-                        ),
-                        SizedBox(
-                          height: 5,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                          child: Row(
-                            children: [
-                              Text(
-                                'Author :   ',
-                                style: TextStyle(
-                                    color: Colors.grey,
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.w600),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 8.0),
+                              child: Text(
+                                snapshot.data.articles[index].title,
+                                style: GoogleFonts.roboto(
+                                    fontSize: 19, fontWeight: FontWeight.w500),
+                                softWrap: true,
                               ),
-                              Text(
-                                snapshot.data.articles[index].authorName,
-                                style: TextStyle(
-                                    color: Colors.grey,
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.w400),
-                              )
-                            ],
-                          ),
+                            ),
+                            SizedBox(
+                              height: 5,
+                            ),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 8.0),
+                              child: Row(
+                                children: [
+                                  Text(
+                                    'Author :   ',
+                                    style: TextStyle(
+                                        color: Colors.grey,
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.w600),
+                                  ),
+                                  Text(
+                                    snapshot.data.articles[index].authorName,
+                                    style: TextStyle(
+                                        color: Colors.grey,
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.w400),
+                                  )
+                                ],
+                              ),
+                            ),
+                            SizedBox(height: 10),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 8.0),
+                              child: Text(
+                                snapshot.data.articles[index].description,
+                                style: GoogleFonts.roboto(
+                                  fontSize: 16,
+                                  height: 1.5,
+                                  fontWeight: FontWeight.w300,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                        SizedBox(height: 10),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                          child: Text(
-                            snapshot.data.articles[index].description,
-                            style: GoogleFonts.roboto(
-                              fontSize: 16,
-                              height: 1.5,
-                              fontWeight: FontWeight.w300,
+                        SizedBox(height: 7),
+                        InkWell(
+                          splashColor: Colors.black,
+                          onTap: null,
+                          child: Container(
+                            height: 50,
+                            width: MediaQuery.of(context).size.width * 1,
+                            child: Card(
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10)),
+                              color: Color(0xffBEC8D2),
+                              shadowColor: Colors.amberAccent,
+                              // margin: EdgeInsets.symmetric(vertical: 10),
+                              child: Container(
+                                alignment: Alignment.center,
+                                padding: EdgeInsets.symmetric(horizontal: 10),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
+                                  //crossAxisAlignment: CrossAxisAlignment.b,
+                                  children: [
+                                    Text(
+                                      '<< Swipe Left to Read more at ${snapshot.data.articles[index].sourceName}',
+                                      style: TextStyle(
+                                          // color: Colors.grey,
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w400),
+                                    ),
+                                  ],
+                                ),
+                              ),
                             ),
                           ),
                         ),
                       ],
                     ),
-                    SizedBox(height: 7),
-                    InkWell(
-                      splashColor: Colors.black,
-                      onTap: null,
-                      child: Container(
-                        height: 50,
-                        width: MediaQuery.of(context).size.width * 1,
-                        child: Card(
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10)),
-                          color: Color(0xffBEC8D2),
-                          shadowColor: Colors.amberAccent,
-                          // margin: EdgeInsets.symmetric(vertical: 10),
-                          child: Container(
-                            alignment: Alignment.center,
-                            padding: EdgeInsets.symmetric(horizontal: 10),
-                            child: Text(
-                                ' << Swipe left to read more at ${snapshot.data.articles[index].sourceName}',
-                                style: TextStyle(
-                                    // color: Colors.grey,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w400)),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
-              ),
-            );
-          },
+              );
+            },
+          ),
         ),
         Scaffold(
           appBar: AppBar(
@@ -355,6 +377,40 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         )
       ],
+    );
+  }
+
+  void _takeScreenshot() async {
+    final imageFile = await _screenshotController.capture(
+      pixelRatio: 2,
+    );
+    Share.shareFiles([imageFile.path], text: 'Sent via newsHub');
+  }
+
+  void _startAddNewTransaction(BuildContext ctx) {
+    showModalBottomSheet(
+      context: ctx,
+      builder: (_) {
+        return GestureDetector(
+          onTap: () {},
+          behavior: HitTestBehavior.opaque,
+          child: Container(
+            child: RawMaterialButton(
+                child: Icon(Icons.share),
+                elevation: 2.0,
+                fillColor: Colors.white,
+                // padding: EdgeInsets.all(15.0),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20)),
+                onPressed: () {
+                  _takeScreenshot();
+                  // _startAddNewTransaction(context);
+                }),
+            height: 50,
+            color: Colors.black,
+          ),
+        );
+      },
     );
   }
 }
