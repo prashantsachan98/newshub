@@ -3,7 +3,7 @@ import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:newshub/view/homepage.dart';
+import './view/homepage.dart';
 
 void main() => runApp(MyApp());
 
@@ -11,7 +11,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      title: "InternetUi",
+      title: "newsHub",
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.purple,
@@ -101,8 +101,8 @@ class _HomePageState extends State<HomePage> {
             SizedBox(
               height: 40,
             ),
-            FlatButton(
-              color: Colors.redAccent,
+            TextButton(
+              style: TextButton.styleFrom(backgroundColor: Colors.red),
               // method to exit application programitacally
               onPressed: () => SystemNavigator.pop(),
               child: Text(
