@@ -1,6 +1,9 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:newshub/view/source.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:share/share.dart';
@@ -9,11 +12,18 @@ import 'package:transformer_page_view/transformer_page_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import '../networking/api.dart';
+import 'package:flutter/widgets.dart';
 import '../model/news.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../transformers/transformer.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../controller/controller.dart';
+
+class RIKeys {
+  static final riKey1 = const Key('__RIKEY1__');
+  static final riKey2 = const Key('__RIKEY2__');
+  static final riKey3 = const Key('__RIKEY3__');
+}
 
 class MyApp extends StatelessWidget {
   @override
@@ -32,16 +42,15 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
+class MyHomePage extends StatelessWidget {
   final controller = Get.put(Controller());
+
   PageController pageView = PageController();
+
   String url;
+
   var _webViewController;
+
   final _screenshotController = ScreenshotController();
 
   final List data = [
@@ -151,92 +160,111 @@ class _MyHomePageState extends State<MyHomePage> {
       children: [
         Scaffold(
           body: Container(
+            color: Colors.white,
             alignment: Alignment.center,
             height: MediaQuery.of(context).size.height * 1,
-            child: GridView.builder(
-              padding: EdgeInsets.symmetric(vertical: 20),
-              itemCount: data.length,
-              gridDelegate:
-                  SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
-              itemBuilder: (BuildContext context, int index) {
-                return Transform.scale(
-                  scale: controller.newsType == data[index] ? 1.2 : 1,
-                  child: Container(
-                    child: InkWell(
-                      splashColor: Colors.blue,
-                      onTap: () {
-                        controller.newsType = data[index].toString();
-                        print(data[index].toString());
-                        Navigator.of(context).push(new PageRouteBuilder(
-                            opaque: true,
-                            transitionDuration:
-                                const Duration(milliseconds: 200),
-                            pageBuilder: (BuildContext context, _, __) {
-                              return MyHomePage();
-                            },
-                            transitionsBuilder: (_, Animation<double> animation,
-                                __, Widget child) {
-                              return new SlideTransition(
-                                child: child,
-                                position: new Tween<Offset>(
-                                  begin: const Offset(1, 0),
-                                  end: Offset.zero,
-                                ).animate(animation),
-                              );
-                            }));
-                      },
-                      child: Column(
-                        children: [
-                          Opacity(
-                            opacity:
-                                controller.newsType == data[index] ? 1 : 0.4,
-                            child: Image.asset(
-                              "assets/icons/${data[index]}.png",
-                              height: 80,
-                              width: 75,
-                              fit: BoxFit.contain,
-                            ),
-                          ),
-                          Text(
-                            data[index],
-                            style: controller.newsType == data[index]
-                                ? TextStyle(
-                                    // color: Color(0xff8192A3),
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w400)
-                                : TextStyle(
-                                    // color: Color(0xff777777),
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w400),
-                          )
-                        ],
-                      ),
-                    ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                SizedBox(
+                  height: 10,
+                ),
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 10),
+                  child: CupertinoSearchTextField(
+                    placeholder: 'search',
+                    itemSize: 40,
+                    borderRadius: BorderRadius.circular(20),
                   ),
-                );
-              },
+                ),
+                Expanded(
+                  child: GridView.builder(
+                    padding: EdgeInsets.symmetric(vertical: 20),
+                    itemCount: data.length,
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 3),
+                    itemBuilder: (BuildContext context, int index) {
+                      return Container(
+                        child: InkWell(
+                          splashColor: Colors.blue,
+                          onTap: () {
+                            controller.newsType = data[index].toString();
+                            print(data[index].toString());
+                            Navigator.of(context).push(new PageRouteBuilder(
+                                opaque: true,
+                                transitionDuration:
+                                    const Duration(milliseconds: 200),
+                                pageBuilder: (BuildContext context, _, __) {
+                                  return MyHomePage();
+                                },
+                                transitionsBuilder: (_,
+                                    Animation<double> animation,
+                                    __,
+                                    Widget child) {
+                                  return new SlideTransition(
+                                    child: child,
+                                    position: new Tween<Offset>(
+                                      begin: const Offset(1, 0),
+                                      end: Offset.zero,
+                                    ).animate(animation),
+                                  );
+                                }));
+                          },
+                          child: Column(
+                            children: [
+                              Opacity(
+                                opacity:
+                                    controller.newsType == data[index] ? 1 : 1,
+                                child: Image.asset(
+                                  "assets/icons/${data[index]}.png",
+                                  height: 80,
+                                  width: 75,
+                                  fit: BoxFit.contain,
+                                ),
+                              ),
+                              Text(
+                                data[index],
+                                style: controller.newsType == data[index]
+                                    ? TextStyle(
+                                        // color: Color(0xff8192A3),
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w400)
+                                    : TextStyle(
+                                        // color: Color(0xff777777),
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w400),
+                              )
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ],
             ),
           ),
         ),
-        InkWell(
-          onTap: () {
-            _startAddNewTransaction(context);
-          },
-          child: TransformerPageView(
-            onPageChanged: (_) {
-              PaintingBinding.instance.imageCache.clear();
-              PaintingBinding.instance.imageCache.clearLiveImages();
+        Screenshot(
+          controller: _screenshotController,
+          child: InkWell(
+            onTap: () {
+              _options(context);
             },
-            //pageController: TransformerPageController(viewportFraction: 0.),
-            scrollDirection: Axis.vertical,
-            transformer: DeepthPageTransformer(),
-            curve: Curves.easeInBack,
-            itemCount: snapshot.data.total,
-            itemBuilder: (BuildContext context, int index) {
-              controller.urlType = snapshot.data.articles[index].sourceUrl;
-              return Screenshot(
-                controller: _screenshotController,
-                child: Card(
+            child: TransformerPageView(
+              onPageChanged: (_) {
+                PaintingBinding.instance.imageCache.clear();
+                PaintingBinding.instance.imageCache.clearLiveImages();
+              },
+              //pageController: TransformerPageController(viewportFraction: 0.),
+              scrollDirection: Axis.vertical,
+              transformer: DeepthPageTransformer(),
+              curve: Curves.easeInBack,
+              itemCount: snapshot.data.total,
+              itemBuilder: (BuildContext context, int index) {
+                controller.urlType = snapshot.data.articles[index].sourceUrl;
+                return Card(
                   margin: EdgeInsets.symmetric(horizontal: 2, vertical: 1),
 
                   elevation: 10,
@@ -333,22 +361,27 @@ class _MyHomePageState extends State<MyHomePage> {
                               color: Color(0xffBEC8D2),
                               shadowColor: Colors.amberAccent,
                               // margin: EdgeInsets.symmetric(vertical: 10),
-                              child: Container(
-                                alignment: Alignment.center,
-                                padding: EdgeInsets.symmetric(horizontal: 10),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceAround,
-                                  //crossAxisAlignment: CrossAxisAlignment.b,
-                                  children: [
-                                    Text(
-                                      '<< Swipe Left to Read more at ${snapshot.data.articles[index].sourceName}',
-                                      style: TextStyle(
-                                          // color: Colors.grey,
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w400),
-                                    ),
-                                  ],
+                              child: InkWell(
+                                onTap: () {
+                                  Get.to(Source(controller.urlType));
+                                },
+                                child: Container(
+                                  alignment: Alignment.center,
+                                  padding: EdgeInsets.symmetric(horizontal: 10),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceAround,
+                                    //crossAxisAlignment: CrossAxisAlignment.b,
+                                    children: [
+                                      Text(
+                                        '<< Swipe Left to Read more at ${snapshot.data.articles[index].sourceName}',
+                                        style: TextStyle(
+                                            // color: Colors.grey,
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w400),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
@@ -357,9 +390,9 @@ class _MyHomePageState extends State<MyHomePage> {
                       ],
                     ),
                   ),
-                ),
-              );
-            },
+                );
+              },
+            ),
           ),
         ),
         Scaffold(
@@ -387,7 +420,7 @@ class _MyHomePageState extends State<MyHomePage> {
     Share.shareFiles([imageFile.path], text: 'Sent via newsHub');
   }
 
-  void _startAddNewTransaction(BuildContext ctx) {
+  void _options(BuildContext ctx) {
     showModalBottomSheet(
       context: ctx,
       builder: (_) {
@@ -395,19 +428,59 @@ class _MyHomePageState extends State<MyHomePage> {
           onTap: () {},
           behavior: HitTestBehavior.opaque,
           child: Container(
-            child: RawMaterialButton(
-                child: Icon(Icons.share),
-                elevation: 2.0,
-                fillColor: Colors.white,
-                // padding: EdgeInsets.all(15.0),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20)),
-                onPressed: () {
-                  _takeScreenshot();
-                  // _startAddNewTransaction(context);
-                }),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(30),
+              color: Colors.white,
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                InkWell(
+                  onTap: null,
+                  child: Container(
+                    width: 100,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        Icon(
+                          Icons.bookmark_outline_rounded,
+                          color: Colors.lightBlue,
+                        ),
+
+                        // padding: EdgeInsets.all(15.0),
+
+                        Text(
+                          'Bookmark',
+                          style: TextStyle(fontSize: 10),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+                InkWell(
+                  onTap: () {
+                    _takeScreenshot();
+                  },
+                  child: Container(
+                    width: 100,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        Icon(
+                          Icons.share_rounded,
+                          color: Colors.lightBlue,
+                        ),
+                        Text(
+                          'Share',
+                          style: TextStyle(fontSize: 10),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
             height: 50,
-            color: Colors.black,
           ),
         );
       },
