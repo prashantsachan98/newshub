@@ -1,8 +1,8 @@
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:newshub/view/searched.dart';
 import 'package:newshub/view/source.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:webview_flutter/webview_flutter.dart';
@@ -18,12 +18,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import '../transformers/transformer.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../controller/controller.dart';
-
-class RIKeys {
-  static final riKey1 = const Key('__RIKEY1__');
-  static final riKey2 = const Key('__RIKEY2__');
-  static final riKey3 = const Key('__RIKEY3__');
-}
 
 class MyApp extends StatelessWidget {
   @override
@@ -42,7 +36,12 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class MyHomePage extends StatelessWidget {
+class MyHomePage extends StatefulWidget {
+  @override
+  _MyHomePageState createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
   final controller = Get.put(Controller());
 
   PageController pageView = PageController();
@@ -167,27 +166,55 @@ class MyHomePage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                SizedBox(
+                Container(
+                  color: Get.isDarkMode ? Colors.black87 : Colors.white,
                   height: 10,
                 ),
                 Container(
+                  alignment: Alignment.center,
+                  color: Get.isDarkMode ? Colors.black87 : Colors.white,
                   padding: EdgeInsets.symmetric(horizontal: 10),
                   child: CupertinoSearchTextField(
+                    padding: EdgeInsets.all(15),
+                    onSubmitted: (searchText) {
+                      searchText.isNotEmpty
+                          ? Navigator.of(context).push(new PageRouteBuilder(
+                              opaque: true,
+                              transitionDuration:
+                                  const Duration(microseconds: 1000),
+                              pageBuilder: (BuildContext context, _, __) {
+                                return Search(searchText);
+                              },
+                              transitionsBuilder: (_,
+                                  Animation<double> animation,
+                                  __,
+                                  Widget child) {
+                                return new SlideTransition(
+                                  child: child,
+                                  position: Tween<Offset>(
+                                    begin: const Offset(0, 1),
+                                    end: Offset.zero,
+                                  ).animate(animation),
+                                );
+                              }))
+                          // ignore: unnecessary_statements
+                          : null;
+                    },
                     placeholder: 'search',
                     itemSize: 40,
                     borderRadius: BorderRadius.circular(20),
                   ),
                 ),
                 Expanded(
-                  child: GridView.builder(
-                    padding: EdgeInsets.symmetric(vertical: 20),
-                    itemCount: data.length,
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 3),
-                    itemBuilder: (BuildContext context, int index) {
-                      return Container(
-                        child: InkWell(
-                          splashColor: Colors.blue,
+                  child: Container(
+                    color: Get.isDarkMode ? Colors.black87 : Colors.white,
+                    child: GridView.builder(
+                      padding: EdgeInsets.symmetric(vertical: 20),
+                      itemCount: data.length,
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 3),
+                      itemBuilder: (BuildContext context, int index) {
+                        return InkWell(
                           onTap: () {
                             controller.newsType = data[index].toString();
                             print(data[index].toString());
@@ -225,11 +252,12 @@ class MyHomePage extends StatelessWidget {
                               ),
                               Text(
                                 data[index],
-                                style: controller.newsType == data[index]
+                                style: Get.isDarkMode
                                     ? TextStyle(
                                         // color: Color(0xff8192A3),
                                         fontSize: 14,
-                                        fontWeight: FontWeight.w400)
+                                        fontWeight: FontWeight.w400,
+                                        color: Colors.white)
                                     : TextStyle(
                                         // color: Color(0xff777777),
                                         fontSize: 14,
@@ -237,9 +265,9 @@ class MyHomePage extends StatelessWidget {
                               )
                             ],
                           ),
-                        ),
-                      );
-                    },
+                        );
+                      },
+                    ),
                   ),
                 ),
               ],
@@ -358,7 +386,7 @@ class MyHomePage extends StatelessWidget {
                             child: Card(
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10)),
-                              color: Color(0xffBEC8D2),
+                              color: Colors.grey,
                               shadowColor: Colors.amberAccent,
                               // margin: EdgeInsets.symmetric(vertical: 10),
                               child: InkWell(
@@ -374,7 +402,7 @@ class MyHomePage extends StatelessWidget {
                                     //crossAxisAlignment: CrossAxisAlignment.b,
                                     children: [
                                       Text(
-                                        '<< Swipe Left to Read more at ${snapshot.data.articles[index].sourceName}',
+                                        ' Read more at ${snapshot.data.articles[index].sourceName}',
                                         style: TextStyle(
                                             // color: Colors.grey,
                                             fontSize: 14,
@@ -422,35 +450,38 @@ class MyHomePage extends StatelessWidget {
 
   void _options(BuildContext ctx) {
     showModalBottomSheet(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      backgroundColor: Get.isDarkMode ? Colors.blueGrey : Colors.white,
       context: ctx,
       builder: (_) {
         return GestureDetector(
           onTap: () {},
           behavior: HitTestBehavior.opaque,
           child: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(30),
-              color: Colors.white,
-            ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 InkWell(
-                  onTap: null,
+                  onTap: () {
+                    Get.back();
+                    Get.isDarkMode
+                        ? Get.changeTheme(ThemeData.light())
+                        : Get.changeTheme(ThemeData.dark());
+                  },
                   child: Container(
                     width: 100,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
                         Icon(
-                          Icons.bookmark_outline_rounded,
+                          Icons.circle,
                           color: Colors.lightBlue,
                         ),
 
                         // padding: EdgeInsets.all(15.0),
 
                         Text(
-                          'Bookmark',
+                          Get.isDarkMode ? 'Light Mode' : 'Dark Mode',
                           style: TextStyle(fontSize: 10),
                         )
                       ],

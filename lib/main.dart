@@ -13,10 +13,6 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       title: "newsHub",
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primarySwatch: Colors.purple,
-        accentColor: Colors.purpleAccent,
-      ),
       home: HomePage(),
     );
   }
@@ -145,6 +141,4 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
-
-  dispose();
 }
