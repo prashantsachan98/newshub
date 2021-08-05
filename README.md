@@ -1,16 +1,29 @@
-# newshub
 
-A new Flutter project.
+# newsHub
 
-## Getting Started
+A new Flutter project. Working Clone of the populer News App inshorts in India
 
-This project is a starting point for a Flutter application.
 
-A few resources to get you started if this is your first Flutter project:
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+## Features
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- Light/dark mode toggle
+- Cross platform
+- User can read Summaries of All Breaking News in 60 words
+- user can read all types of news and headlines from various
+- categories and various sources in one place.
+- Webview to read full news from source
+- User can share news cards with his/her friends
+
+
+  
+## Acknowledgements
+
+ - [📰 Inshorts News API v2](https://github.com/sumitkolhe/inshorts-api-v2#-inshorts-news-api-v2)
+ 
+## Screenshots
+
+![App Screenshot](https://github.com/prashantsachan98/newshub/blob/master/screenshots/Screenshot_20210805-103037837.jpg)
+![App Screenshot](https://github.com/prashantsachan98/newshub/blob/master/screenshots/Screenshot_20210805-104041791.jpg)
+![App Screenshot](https://github.com/prashantsachan98/newshub/blob/master/screenshots/Screenshot_20210805-104102813.jpg)
+![App Screenshot](https://github.com/prashantsachan98/newshub/blob/master/screenshots/Screenshot_20210805-104127676.jpg)
