@@ -55,7 +55,7 @@ class _MyHomePageState extends State<MyHomePage> {
   final List data = [
     'all_news',
     'trending',
-    'top stories',
+    'top_stories',
     'national',
     'business',
     'politics',
